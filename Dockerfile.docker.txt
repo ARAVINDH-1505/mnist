@@ -1,0 +1,34 @@
+# Use an official lightweight Python image
+FROM python:3.10-slim
+
+# Prevents Python from writing .pyc files and forces stdout/stderr to be unbuffered
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install minimal system dependencies required by some Python packages (e.g. torchvision)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libgl1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files into the container
+COPY . /app
+
+# Upgrade pip and install Python dependencies.
+# If a requirements.txt exists in the repo it will be used; otherwise install Flask and a CPU
+# build of PyTorch/torchvision so the model can be loaded without CUDA.
+RUN pip install --no-cache-dir --upgrade pip && \
+    if [ -f requirements.txt ]; then \
+        pip install --no-cache-dir -r requirements.txt; \
+    else \
+        pip install --no-cache-dir flask && \
+        pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu; \
+    fi
+
+# Expose the port your app uses (adjust if app.py uses a different port)
+EXPOSE 5000
+
+# Default command to run the application
+CMD ["python", "app.py"]
