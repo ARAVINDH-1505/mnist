@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MNIST Digit Recognizer</title>
+</head>
+<body>
+    <h2>Upload a digit image</h2>
+    <input type="file" id="fileInput">
+    <button onclick="predict()">Predict</button>
+
+    <p id="result"></p>
+
+    <script>
+        async function predict() {
+            const fileInput = document.getElementById("fileInput");
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            document.getElementById("result").innerText =
+                "Predicted Digit: " + data.predicted_digit;
+        }
+    </script>
+</body>
+</html>
