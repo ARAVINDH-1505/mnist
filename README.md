@@ -197,8 +197,3 @@ Convert model to ONNX or TorchScript
 
 Add logging and monitoring
 
-👨‍💻 Author
-
-Sri Aravindh
-B.Tech | Machine Learning & AI
-Interested in ML Engineering, MLOps, and Model Deployment
